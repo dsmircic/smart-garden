@@ -1,3 +1,6 @@
+#include <Arduino.h>
+#include <SmartGardenComms.h>
+
 void setup() {
   // put your setup code here, to run once:
 
