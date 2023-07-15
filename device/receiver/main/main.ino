@@ -22,6 +22,6 @@ void loop() {
   if (rx != NULL)
   {
     display_message("Current flow: " + rx + " L/min");
-    calculate_litre_output(toInt(rx));
+    calculate_litre_output(rx.toInt());
   }
 }
