@@ -56,7 +56,7 @@ void lora_send_message(String message)
 		txNumber += 0.01;
 		sprintf(txpacket,"%s %0.2f", message, txNumber);  //start a package
    
-		Serial.printf("\r\nsending packet \"%s\" , length %d\r\n",message, strlen(txpacket));
+		Serial.printf("\r\nsending packet \"%s\" , length %d\r\n", txpacket, strlen(txpacket));
 
 		Radio.Send( (uint8_t *)txpacket, strlen(txpacket) ); //send the package out	
     lora_idle = false;

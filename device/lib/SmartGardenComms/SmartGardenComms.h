@@ -37,8 +37,6 @@ void lora_init_receiver();
 void lora_send_message(String message);
 String lora_receive_message();
 
-// void cbk(int packetSize);
-// void LoRaData();
 
 void OnTxDone( void );
 void OnTxTimeout( void );
