@@ -1,8 +1,13 @@
 #include <Arduino.h>
 #include <SmartGardenComms.h>
 #include <HeltecDisplay.h>
+#include "help.h"
 
-void setup() {
+int total_litres;
+void setup() 
+{
+  total_litres = 0;
+
   Serial.begin(115200);
   lora_init_receiver();
   init_display();
@@ -15,5 +20,8 @@ void loop() {
   rx = lora_receive_message();
 
   if (rx != NULL)
-    display_message("Recv: " + rx);
+  {
+    display_message("Current flow: " + rx + " L/min");
+    calculate_litre_output(toInt(rx));
+  }
 }
