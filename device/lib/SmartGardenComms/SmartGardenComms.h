@@ -31,16 +31,44 @@
 #define RX_TIMEOUT_VALUE                            1000
 #define BUFFER_SIZE                                 30 // Define the payload size here
 
+/**
+ * @brief Initializes transmitter for LoRa communication.
+ * 
+ */
 void lora_init_transmitter();
+
+/**
+ * @brief Initializes receiver for LoRa communication.
+ * 
+ */
 void lora_init_receiver();
 
+/**
+ * @brief Sends LoRa message to the receiver on the specified frequency.
+ * 
+ * @param message message to be sent.
+ */
 void lora_send_message(String message);
+
+/**
+ * @brief Receives LoRa packet.
+ * 
+ * @return String the received LoRa pacekt.
+ */
 String lora_receive_message();
 
 
 void OnTxDone( void );
 void OnTxTimeout( void );
 
+/**
+ * @brief Callback funciton for receiveing packets.
+ * 
+ * @param payload received message
+ * @param size packet size
+ * @param rssi signal strength
+ * @param snr 
+ */
 void OnRxDone( uint8_t *payload, uint16_t size, int16_t rssi, int8_t snr );
 
 #endif

@@ -49,10 +49,6 @@ void measure_flow(flow_measurements &fm)
         pulse_count_clear = 0;
         fm.clear_flow = ((1000.0 / (millis() - previous_millis)) * pulse_1_sec_clear) / CALIBRATION_FACTOR;
 
-
-        Serial.print("CF: ");
-        Serial.println(fm.clear_flow);
-
         pulse_1_sec_waste = pulse_count_waste;
         pulse_count_waste = 0;
         fm.waste_flow = ((1000.0 / (millis() - previous_millis)) * pulse_1_sec_waste) / CALIBRATION_FACTOR;
