@@ -1,9 +1,9 @@
 #include <Arduino.h>
 #include <SmartGardenComms.h>
 #include <HeltecDisplay.h>
-#include "help.h"
+#include <FlowSensor.h>
 
-int total_litres;
+float total_litres;
 void setup() 
 {
   total_litres = 0;
@@ -15,13 +15,22 @@ void setup()
 }
 
 String rx;
+flow_measurement fm;
 void loop() {
   // put your main code here, to run repeatedly:
-  rx = lora_receive_message();
+  lora_receive_reading(fm);
 
-  if (rx != NULL)
+  if (fm.clear_flow > 0 || fm.waste_flow > 0)
   {
-    display_message("Current flow: " + rx + " L/min");
-    calculate_litre_output(rx.toInt());
+    total_litres += fm.clear_flow / 60;
+
+    display_message("Clear flow: " + String(fm.clear_flow) + " L/min");
+    display_message("Waste flow: " + String(fm.waste_flow) + " L/min", 0, 12);
+    display_message("Tx No: " + String(fm.tx_number), 0, 24);
+    display_message("Total litres: " + String(total_litres), 0, 36);
+
+    clear_display();
   }
+
+  fm.clear_flow = fm.waste_flow = 0;
 }
