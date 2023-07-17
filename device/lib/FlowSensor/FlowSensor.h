@@ -3,12 +3,18 @@
 
 #include <Arduino.h>
 
-#define SENSOR 7
+#define C_SENSOR 7
+#define W_SENSOR 19
 #define CALIBRATION_FACTOR 4.5
 #define INTERVAL 1000
 
+struct flow_measurements
+{
+    float clear_flow;
+    float waste_flow;
+};
+
 void init_flow_sensor();
-int measure_flow();
-void IRAM_ATTR pulse_counter();
+void measure_flow(flow_measurements &fm);
 
 #endif

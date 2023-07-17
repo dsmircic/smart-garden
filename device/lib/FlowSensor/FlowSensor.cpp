@@ -2,45 +2,61 @@
 
 long current_millis, previous_millis;
 
-volatile byte pulse_count;
-byte pulse_1_sec;
+volatile byte pulse_count_clear, pulse_count_waste;
+byte pulse_1_sec_clear, pulse_1_sec_waste;
 
-float flow_rate;
-
-void IRAM_ATTR pulse_counter()
+void IRAM_ATTR pulse_counter_clear()
 {
-  pulse_count++;
+  pulse_count_clear++;
+}
+
+void IRAM_ATTR pulse_counter_waste()
+{
+  pulse_count_waste++;
 }
 
 void init_flow_sensor()
 {
-    pinMode(SENSOR, INPUT_PULLUP);
+    pinMode(C_SENSOR, INPUT_PULLUP);
+    pinMode(W_SENSOR, INPUT_PULLUP);
 
-    pulse_count = 0;
-    pulse_1_sec = 0;
-    flow_rate = 0.0;
+    pulse_count_clear = 0;
+    pulse_count_waste = 0;
+
+    pulse_1_sec_clear = 0;
+    pulse_1_sec_waste = 0;
 
     current_millis = 0;
     previous_millis = 0;
 
-    attachInterrupt(digitalPinToInterrupt(SENSOR), pulse_counter, FALLING);
+    attachInterrupt(digitalPinToInterrupt(W_SENSOR), pulse_counter_waste, FALLING);
+    attachInterrupt(digitalPinToInterrupt(C_SENSOR), pulse_counter_clear, FALLING);
 }
 
 
-int measure_flow()
+void measure_flow(flow_measurements &fm)
 {
     current_millis = millis();
     if (current_millis - previous_millis > INTERVAL)
     {
-        pulse_1_sec = pulse_count;
-        pulse_count = 0;
-
         // Because this loop may not complete in exactly 1 second intervals we calculate
         // the number of milliseconds that have passed since the last execution and use
         // that to scale the output. We also apply the calibrationFactor to scale the output
         // based on the number of pulses per second per units of measure (litres/minute in
         // this case) coming from the sensor.
-        flow_rate = ((1000.0 / (millis() - previous_millis)) * pulse_1_sec) / CALIBRATION_FACTOR;
+
+        pulse_1_sec_clear = pulse_count_clear;
+        pulse_count_clear = 0;
+        fm.clear_flow = ((1000.0 / (millis() - previous_millis)) * pulse_1_sec_clear) / CALIBRATION_FACTOR;
+
+
+        Serial.print("CF: ");
+        Serial.println(fm.clear_flow);
+
+        pulse_1_sec_waste = pulse_count_waste;
+        pulse_count_waste = 0;
+        fm.waste_flow = ((1000.0 / (millis() - previous_millis)) * pulse_1_sec_waste) / CALIBRATION_FACTOR;
+
         previous_millis = millis();
 
         // Divide the flow rate in litres/minute by 60 to determine how many litres have
@@ -50,12 +66,6 @@ int measure_flow()
         // Add the millilitres passed in this second to the cumulative total
         
         // Print the flow rate for this second in litres / minute
-        Serial.print("Flow rate: ");
-        Serial.print(int(flow_rate));  // Print the integer part of the variable
-        Serial.println("L/min");
 
-        return flow_rate;
     }
-
-    return -1;
 }

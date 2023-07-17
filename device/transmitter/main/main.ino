@@ -13,14 +13,21 @@ void setup()
 
 }
 
-
+flow_measurements fm;
 void loop() 
 {
-  int flow = measure_flow();
-  if (flow > 0)
+  measure_flow(fm);
+
+
+
+  if (fm.clear_flow > 0 || fm.waste_flow > 0)
   {
-    lora_send_message(String(flow));
-    display_message("Flow: " + String(flow) + " L/min");
+    // lora_send_message(String(flow));
+    display_message("Clear flow: " + String(fm.clear_flow) + " L/min", 0, 0);
+    display_message("Waste flow: " + String(fm.waste_flow) + " L/min", 0, 20);
+
+    clear_display();
   }
+
 
 }

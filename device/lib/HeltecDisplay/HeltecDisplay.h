@@ -5,6 +5,7 @@
 #include "HT_SSD1306Wire.h"
 
 void init_display();
-void display_message(String message);
+void display_message(String message, int width = 0, int height = 0);
+void clear_display();
 
 #endif
