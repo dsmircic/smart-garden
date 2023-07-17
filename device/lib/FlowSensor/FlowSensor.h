@@ -2,6 +2,7 @@
 #define LIB_FLOW
 
 #include <Arduino.h>
+#include <cmath>
 
 #define C_SENSOR 7
 #define W_SENSOR 19
@@ -12,10 +13,11 @@
  * @brief Stores clear and waste water flow in liters/min.
  * 
  */
-struct flow_measurements
+struct flow_measurement
 {
     float clear_flow;
     float waste_flow;
+    double tx_number;
 };
 
 /**
@@ -29,6 +31,6 @@ void init_flow_sensor();
  * 
  * @param fm -> water flow measurements.
  */
-void measure_flow(flow_measurements &fm);
+void measure_flow(flow_measurement &fm);
 
 #endif

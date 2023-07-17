@@ -33,8 +33,8 @@ void init_flow_sensor()
     attachInterrupt(digitalPinToInterrupt(C_SENSOR), pulse_counter_clear, FALLING);
 }
 
-
-void measure_flow(flow_measurements &fm)
+float clear, waste;
+void measure_flow(flow_measurement &fm)
 {
     current_millis = millis();
     if (current_millis - previous_millis > INTERVAL)
@@ -47,11 +47,14 @@ void measure_flow(flow_measurements &fm)
 
         pulse_1_sec_clear = pulse_count_clear;
         pulse_count_clear = 0;
-        fm.clear_flow = ((1000.0 / (millis() - previous_millis)) * pulse_1_sec_clear) / CALIBRATION_FACTOR;
+        clear = ((1000.0 / (millis() - previous_millis)) * pulse_1_sec_clear) / CALIBRATION_FACTOR;
 
         pulse_1_sec_waste = pulse_count_waste;
         pulse_count_waste = 0;
-        fm.waste_flow = ((1000.0 / (millis() - previous_millis)) * pulse_1_sec_waste) / CALIBRATION_FACTOR;
+        waste = ((1000.0 / (millis() - previous_millis)) * pulse_1_sec_waste) / CALIBRATION_FACTOR;
+
+        fm.clear_flow = round(clear * 100) / 100.0;
+        fm.waste_flow = round(waste * 100) / 100.0;
 
         previous_millis = millis();
 
