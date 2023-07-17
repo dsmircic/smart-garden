@@ -6,16 +6,12 @@ char txpacket[BUFFER_SIZE];
 char rxpacket[BUFFER_SIZE];
 
 static RadioEvents_t RadioEvents;
-
-double txNumber;
 int16_t rssi,rxSize;
 
 void lora_init_transmitter()
 {
 
   Mcu.begin();
-	
-  txNumber=0;
 
   RadioEvents.TxDone = OnTxDone;
   RadioEvents.TxTimeout = OnTxTimeout;
@@ -34,8 +30,7 @@ void lora_init_transmitter()
 void lora_init_receiver()
 {
   Mcu.begin();
-    
-  txNumber=0;
+
   rssi=0;
 
   RadioEvents.RxDone = OnRxDone;
@@ -48,44 +43,56 @@ void lora_init_receiver()
   Serial.println("Receiver setup successful!");
 }
 
-void lora_send_message(String message)
+void lora_send_reading(flow_measurement fm)
 {
-  if(lora_idle == true)
-	{
-    delay(1000);
-		txNumber += 0.01;
-		sprintf(txpacket,"%s %0.2f", message, txNumber);  //start a package
+
+    StaticJsonDocument<BUFFER_SIZE> jsonDoc;
+
+    jsonDoc["cf"] = fm.clear_flow;
+    jsonDoc["wf"] = fm.waste_flow;
+    jsonDoc["tx"] = fm.tx_number;
+
+    serializeJson(jsonDoc, txpacket);
+
+		// sprintf(txpacket,"%s %0.2f", message, txNumber);  //start a package
    
-		Serial.printf("\r\nsending packet \"%s\" , length %d\r\n",message, strlen(txpacket));
+		Serial.printf("\r\nsending packet \"%s\" , length %d\r\n", txpacket, strlen(txpacket));
 
 		Radio.Send( (uint8_t *)txpacket, strlen(txpacket) ); //send the package out	
-    lora_idle = false;
-	}
-  Radio.IrqProcess( );
 
+  Radio.IrqProcess( );
   Serial.println("Message sent!");
 }
 
-String lora_receive_message()
+void lora_receive_reading(flow_measurement &fm)
 {
   String receivedMessage = "";
-
-  if (lora_idle)
-  {
-    lora_idle = false;
-    Serial.println("into RX mode");
-    Radio.Rx(0);
-  }
+  StaticJsonDocument<BUFFER_SIZE> jsonDoc;
+  Radio.Rx(0);
 
   Radio.IrqProcess();
 
   if (rxSize > 0)
   {
-    receivedMessage = String(rxpacket);
+    DeserializationError error = deserializeJson(jsonDoc, rxpacket);
+
+    if (!error)
+    {
+      fm.clear_flow = jsonDoc["cf"].as<float>();
+      fm.waste_flow = jsonDoc["wf"].as<float>();
+      fm.tx_number = jsonDoc["tx"].as<float>();
+    }
+    else
+    {
+      fm.clear_flow = -1;
+      fm.waste_flow = -1;
+      fm.tx_number = -1;
+    }
+
+    // receivedMessage = String(rxpacket);
     rxSize = 0;
   }
 
-  return receivedMessage;
 }
 
 void OnRxDone( uint8_t *payload, uint16_t size, int16_t rssi, int8_t snr )

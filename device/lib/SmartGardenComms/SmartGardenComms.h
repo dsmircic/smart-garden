@@ -5,6 +5,8 @@
 // #include <SPI.h>
 #include "WiFi.h"
 #include "LoRaWan_APP.h"
+#include <ArduinoJson.h>
+#include <FlowSensor.h>
 
 #define LORA_FREQ 868E6
 
@@ -29,20 +31,46 @@
 
 
 #define RX_TIMEOUT_VALUE                            1000
-#define BUFFER_SIZE                                 30 // Define the payload size here
+#define BUFFER_SIZE                                 64 // Define the payload size here
 
+/**
+ * @brief Initializes transmitter for LoRa communication.
+ * 
+ */
 void lora_init_transmitter();
+
+/**
+ * @brief Initializes receiver for LoRa communication.
+ * 
+ */
 void lora_init_receiver();
 
-void lora_send_message(String message);
-String lora_receive_message();
+/**
+ * @brief Sends LoRa message to the receiver on the specified frequency.
+ * 
+ * @param fm reading to be sent.
+ */
+void lora_send_reading(flow_measurement fm);
 
-// void cbk(int packetSize);
-// void LoRaData();
+/**
+ * @brief Receives LoRa packet.
+ * 
+ * @param fm flow_measurement struct to store the received data
+ */
+void lora_receive_reading(flow_measurement &fm);
+
 
 void OnTxDone( void );
 void OnTxTimeout( void );
 
+/**
+ * @brief Callback funciton for receiveing packets.
+ * 
+ * @param payload received message
+ * @param size packet size
+ * @param rssi signal strength
+ * @param snr 
+ */
 void OnRxDone( uint8_t *payload, uint16_t size, int16_t rssi, int8_t snr );
 
 #endif

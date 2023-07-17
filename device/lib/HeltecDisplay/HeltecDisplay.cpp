@@ -9,11 +9,13 @@ void init_display()
     sg_display.display();
 }
 
-void display_message(String message)
+void display_message(String message, int width, int height)
 {
-    sg_display.drawString(0, 0, message);
+    sg_display.drawString(width, height, message);
     sg_display.display();
+}
 
-    delay(200);
+void clear_display()
+{
     sg_display.clear();
 }
