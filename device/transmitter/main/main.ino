@@ -3,7 +3,7 @@
 #include <HeltecDisplay.h>
 #include <FlowSensor.h>
 
-float packet_no;
+double packet_no;
 
 void setup()
 {
