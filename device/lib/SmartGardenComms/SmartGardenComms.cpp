@@ -1,7 +1,5 @@
 #include "SmartGardenComms.h"
 
-bool lora_idle = true;
-
 char txpacket[BUFFER_SIZE];
 char rxpacket[BUFFER_SIZE];
 
@@ -13,7 +11,6 @@ void lora_init_transmitter()
 
   Mcu.begin();
 
-  RadioEvents.TxDone = OnTxDone;
   RadioEvents.TxTimeout = OnTxTimeout;
   
   Radio.Init( &RadioEvents );
@@ -80,7 +77,7 @@ void lora_receive_reading(flow_measurement &fm)
     {
       fm.clear_flow = jsonDoc["cf"].as<float>();
       fm.waste_flow = jsonDoc["wf"].as<float>();
-      fm.tx_number = jsonDoc["tx"].as<float>();
+      fm.tx_number = jsonDoc["tx"].as<double>();
     }
     else
     {
@@ -103,18 +100,10 @@ void OnRxDone( uint8_t *payload, uint16_t size, int16_t rssi, int8_t snr )
     rxpacket[size]='\0';
     Radio.Sleep( );
     Serial.printf("\r\nreceived packet \"%s\" with rssi %d , length %d\r\n",rxpacket,rssi,rxSize);
-    lora_idle = true;
-}
-
-void OnTxDone( void )
-{
-	Serial.println("TX done......");
-	lora_idle = true;
 }
 
 void OnTxTimeout( void )
 {
     Radio.Sleep( );
     Serial.println("TX Timeout......");
-    lora_idle = true;
 }

@@ -6,7 +6,7 @@
 
 #define C_SENSOR 7
 #define W_SENSOR 19
-#define CALIBRATION_FACTOR 4.5
+#define CALIBRATION_FACTOR 7.5
 #define INTERVAL 1000
 
 /**
