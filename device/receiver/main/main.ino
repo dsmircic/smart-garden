@@ -11,6 +11,8 @@ void setup()
   Serial.begin(115200);
   lora_init_receiver();
   init_display();
+  // connect_to_wifi();
+  // connect_to_mqtt();
 
 }
 
@@ -30,6 +32,8 @@ void loop() {
     display_message("Total litres: " + String(total_litres), 0, 36);
 
     clear_display();
+
+    publish_to_mqtt(fm.clear_flow / 60);
   }
 
   fm.clear_flow = fm.waste_flow = 0;

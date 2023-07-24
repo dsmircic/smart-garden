@@ -3,11 +3,15 @@
 
 // #include <LoRa.h>
 // #include <SPI.h>
-#include "WiFi.h"
 #include "LoRaWan_APP.h"
 #include <ArduinoJson.h>
 #include <FlowSensor.h>
 
+#include <WiFi.h>
+#include <Adafruit_MQTT.h>
+#include <Adafruit_MQTT_Client.h>
+
+#pragma region LoRa
 #define LORA_FREQ 868E6
 
 
@@ -72,5 +76,24 @@ void OnTxTimeout( void );
  * @param snr 
  */
 void OnRxDone( uint8_t *payload, uint16_t size, int16_t rssi, int8_t snr );
+#pragma endregion
+
+#pragma region MQTT
+const char* mqtt_broker = "tcp://mqtt.akenza.io";
+const int mqtt_port= 1883;
+const char* mqtt_username = "07003fbc3ed0e204";
+const char* mqtt_password = "awgacw9ac1g6jqbwxj5d30j2h5f968r9";
+const char* mqtt_topic = "/up/awgacw9ac1g6jqbwxj5d30j2h5f968r9/id/B6DA2B2ECCDEF3AB";
+
+void publish_to_mqtt(float volume);
+void connect_to_mqtt();
+#pragma endregion 
+
+#pragma region WiFi
+const char* wifi_ssid = "MaslinskiDvori";
+const char* wifi_password = "4455667788";
+
+void connect_to_wifi();
+#pragma endregion
 
 #endif
