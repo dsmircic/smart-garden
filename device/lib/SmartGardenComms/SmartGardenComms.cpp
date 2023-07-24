@@ -110,9 +110,14 @@ void OnTxTimeout(void)
 #pragma endregion
 
 #pragma region MQTT
+static const char* mqtt_broker_sg = "tcp://mqtt.akenza.io";
+static const int mqtt_port_sg = 1883;
+static const char* mqtt_username_sg = "07003fbc3ed0e204";
+static const char* mqtt_password_sg = "awgacw9ac1g6jqbwxj5d30j2h5f968r9";
+static const char* mqtt_topic_sg = "/up/awgacw9ac1g6jqbwxj5d30j2h5f968r9/id/B6DA2B2ECCDEF3AB";
 
 WiFiClient wifi_client;
-Adafruit_MQTT_Client mqtt_client(&wifi_client, mqtt_broker, mqtt_port, mqtt_username, mqtt_password);
+Adafruit_MQTT_Client mqtt_client(&wifi_client, mqtt_broker_sg, mqtt_port_sg, mqtt_username_sg, mqtt_password_sg);
 
 void publish_to_mqtt(float volume)
 {
@@ -124,7 +129,7 @@ void publish_to_mqtt(float volume)
   if (mqtt_client.connected())
   {
     Serial.println("Publishing message to MQTT topic...");
-    mqtt_client.publish(mqtt_topic, payload);
+    mqtt_client.publish(mqtt_topic_sg, payload);
   }
   else
   {
@@ -144,6 +149,7 @@ void connect_to_mqtt()
     if (mqtt_client.connect())
     {
       Serial.println("connected!");
+      break;
     }
     else
     {
@@ -156,10 +162,12 @@ void connect_to_mqtt()
 #pragma endregion
 
 #pragma region WiFi
+static const char* wifi_ssid_sg = "MaslinskiDvori";
+static const char* wifi_password_sg = "4455667788";
 
 void connect_to_wifi()
 {
-  WiFi.begin(wifi_ssid, wifi_password);
+  WiFi.begin(wifi_ssid_sg, wifi_password_sg);
 
   // attempt to connect to Wifi network:
   while (WiFi.status() != WL_CONNECTED)
@@ -170,7 +178,7 @@ void connect_to_wifi()
   }
 
   Serial.print("Connected to ");
-  Serial.println(wifi_ssid);
+  Serial.println(wifi_ssid_sg);
 }
 
 #pragma endregion

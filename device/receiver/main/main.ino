@@ -11,8 +11,8 @@ void setup()
   Serial.begin(115200);
   lora_init_receiver();
   init_display();
-  // connect_to_wifi();
-  // connect_to_mqtt();
+  connect_to_wifi();
+  connect_to_mqtt();
 
 }
 
