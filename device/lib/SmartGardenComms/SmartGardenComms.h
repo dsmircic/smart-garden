@@ -3,11 +3,15 @@
 
 // #include <LoRa.h>
 // #include <SPI.h>
-#include "WiFi.h"
 #include "LoRaWan_APP.h"
 #include <ArduinoJson.h>
 #include <FlowSensor.h>
 
+#include <WiFi.h>
+#include <Adafruit_MQTT.h>
+#include <Adafruit_MQTT_Client.h>
+
+#pragma region LoRa
 #define LORA_FREQ 868E6
 
 
@@ -72,5 +76,17 @@ void OnTxTimeout( void );
  * @param snr 
  */
 void OnRxDone( uint8_t *payload, uint16_t size, int16_t rssi, int8_t snr );
+#pragma endregion
+
+#pragma region MQTT
+
+void publish_to_mqtt(float volume);
+void connect_to_mqtt();
+#pragma endregion 
+
+#pragma region WiFi
+
+void connect_to_wifi();
+#pragma endregion
 
 #endif
