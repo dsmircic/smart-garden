@@ -11,6 +11,7 @@ void setup()
   Serial.begin(115200);
   lora_init_receiver();
   init_display();
+  connect_to_wifi();
 
 }
 
@@ -32,5 +33,8 @@ void loop() {
     clear_display();
   }
 
+  post_data(100 / 60.0);
   fm.clear_flow = fm.waste_flow = 0;
+
+  delay(10000);
 }
