@@ -34,9 +34,7 @@ void loop() {
 
     clear_display();
     post_data(current_litres);
-  }
+ }
 
   fm.clear_flow = fm.waste_flow = 0;
-
-  delay(10000);
 }
