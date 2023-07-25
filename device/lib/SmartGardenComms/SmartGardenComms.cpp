@@ -1,4 +1,7 @@
 #include "SmartGardenComms.h"
+#include "config.h"
+
+#pragma region LoRa
 
 #pragma region LoRa
 
@@ -109,66 +112,48 @@ void OnTxTimeout(void)
 
 #pragma endregion
 
-#pragma region MQTT
-static const char* mqtt_broker_sg = "tcp://mqtt.akenza.io";
-static const int mqtt_port_sg = 1883;
-static const char* mqtt_username_sg = "07003fbc3ed0e204";
-static const char* mqtt_password_sg = "awgacw9ac1g6jqbwxj5d30j2h5f968r9";
-static const char* mqtt_topic_sg = "/up/awgacw9ac1g6jqbwxj5d30j2h5f968r9/id/B6DA2B2ECCDEF3AB";
+#pragma region HTTP
 
-WiFiClient wifi_client;
-Adafruit_MQTT_Client mqtt_client(&wifi_client, mqtt_broker_sg, mqtt_port_sg, mqtt_username_sg, mqtt_password_sg);
-
-void publish_to_mqtt(float volume)
+HTTPClient http;
+void post_data(float volume)
 {
-  // Convert the integer value to a string
-  char payload[10];
-  snprintf(payload, sizeof(payload), "%d", volume);
+  // Convert float data to string
+  String data = "{\"volume\":" + String(volume, 2) + "}";
 
-  // Publish the value to the MQTT topic
-  if (mqtt_client.connected())
+  // Create the HTTP client
+
+  // Set up the request URL with the secret and device ID
+  String url = String(HTTP_URL) + String(HTTP_SECRET) + "&deviceId=" + String(DEVICE_ID) + "&topic=" + String(HTTP_TOPIC);
+
+  // Make the HTTP POST request
+  http.begin(url);
+  http.addHeader("Content-Type", "application/json");
+  int httpResponseCode = http.POST(data);
+
+  // Check the response
+  if (httpResponseCode > 0)
   {
-    Serial.println("Publishing message to MQTT topic...");
-    mqtt_client.publish(mqtt_topic_sg, payload);
+    Serial.print("HTTP Response code: ");
+    Serial.println(httpResponseCode);
+    String response = http.getString();
+    Serial.println(response);
   }
   else
   {
-    Serial.println("MQTT not connected, retrying...");
-    connect_to_mqtt();
+    Serial.print("Error in HTTP request. HTTP Response code: ");
+    Serial.println(httpResponseCode);
   }
 
-  // Wait before sending the next update
-  delay(5000); // Change this delay to the desired interval
-}
-
-void connect_to_mqtt()
-{
-  Serial.print("Connecting to MQTT broker...");
-  while (!mqtt_client.connected())
-  {
-    if (mqtt_client.connect())
-    {
-      Serial.println("connected!");
-      break;
-    }
-    else
-    {
-      Serial.print("failed, retrying in 5 seconds...");
-      delay(5000);
-    }
-  }
+  http.end();  // Free resources
 }
 
 #pragma endregion
 
-#pragma region WiFi
-static const char* wifi_ssid_sg = "MaslinskiDvori";
-static const char* wifi_password_sg = "4455667788";
 
+#pragma region WiFi
 void connect_to_wifi()
 {
-  WiFi.begin(wifi_ssid_sg, wifi_password_sg);
-
+  WiFi.begin(WIFI_SSID, WIFI_PASS);
   // attempt to connect to Wifi network:
   while (WiFi.status() != WL_CONNECTED)
   {
@@ -178,7 +163,7 @@ void connect_to_wifi()
   }
 
   Serial.print("Connected to ");
-  Serial.println(wifi_ssid_sg);
+  Serial.println(WIFI_SSID);
 }
 
 #pragma endregion

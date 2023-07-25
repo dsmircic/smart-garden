@@ -12,19 +12,20 @@ void setup()
   lora_init_receiver();
   init_display();
   connect_to_wifi();
-  connect_to_mqtt();
 
 }
 
 String rx;
 flow_measurement fm;
+float current_litres;
 void loop() {
   // put your main code here, to run repeatedly:
   lora_receive_reading(fm);
 
   if (fm.clear_flow > 0 || fm.waste_flow > 0)
   {
-    total_litres += fm.clear_flow / 60;
+    current_litres = fm.clear_flow / 60.0;
+    total_litres += current_litres;
 
     display_message("Clear flow: " + String(fm.clear_flow) + " L/min");
     display_message("Waste flow: " + String(fm.waste_flow) + " L/min", 0, 12);
@@ -32,9 +33,8 @@ void loop() {
     display_message("Total litres: " + String(total_litres), 0, 36);
 
     clear_display();
-
-    publish_to_mqtt(fm.clear_flow / 60);
-  }
+    post_data(current_litres);
+ }
 
   fm.clear_flow = fm.waste_flow = 0;
 }
