@@ -3,6 +3,8 @@
 
 #pragma region LoRa
 
+#pragma region LoRa
+
 char txpacket[BUFFER_SIZE];
 char rxpacket[BUFFER_SIZE];
 
@@ -147,11 +149,11 @@ void post_data(float volume)
 
 #pragma endregion
 
+
 #pragma region WiFi
 void connect_to_wifi()
 {
   WiFi.begin(WIFI_SSID, WIFI_PASS);
-
   // attempt to connect to Wifi network:
   while (WiFi.status() != WL_CONNECTED)
   {
