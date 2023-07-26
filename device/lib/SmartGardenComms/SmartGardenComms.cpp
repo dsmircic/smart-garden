@@ -3,8 +3,6 @@
 
 #pragma region LoRa
 
-#pragma region LoRa
-
 char txpacket[BUFFER_SIZE];
 char rxpacket[BUFFER_SIZE];
 
@@ -48,8 +46,8 @@ void lora_send_reading(flow_measurement fm)
 
   StaticJsonDocument<BUFFER_SIZE> jsonDoc;
 
-  jsonDoc["cf"] = fm.clear_flow;
-  jsonDoc["wf"] = fm.waste_flow;
+  jsonDoc["cf"] = fm.new_membrane_flow;
+  jsonDoc["wf"] = fm.old_membrane_flow;
   jsonDoc["tx"] = fm.tx_number;
 
   serializeJson(jsonDoc, txpacket);
@@ -78,14 +76,14 @@ void lora_receive_reading(flow_measurement &fm)
 
     if (!error)
     {
-      fm.clear_flow = jsonDoc["cf"].as<float>();
-      fm.waste_flow = jsonDoc["wf"].as<float>();
+      fm.new_membrane_flow = jsonDoc["cf"].as<float>();
+      fm.old_membrane_flow = jsonDoc["wf"].as<float>();
       fm.tx_number = jsonDoc["tx"].as<double>();
     }
     else
     {
-      fm.clear_flow = -1;
-      fm.waste_flow = -1;
+      fm.new_membrane_flow = -1;
+      fm.old_membrane_flow = -1;
       fm.tx_number = -1;
     }
 
@@ -115,10 +113,10 @@ void OnTxTimeout(void)
 #pragma region HTTP
 
 HTTPClient http;
-void post_data(float volume)
+void post_data(float new_volume, float old_volume)
 {
   // Convert float data to string
-  String data = "{\"volume\":" + String(volume, 2) + "}";
+  String data = "{\"new_volume\":" + String(new_volume, 2) + ",\"old_volume\":" + String(old_volume, 2) + "}";
 
   // Create the HTTP client
 
@@ -149,11 +147,11 @@ void post_data(float volume)
 
 #pragma endregion
 
-
 #pragma region WiFi
 void connect_to_wifi()
 {
   WiFi.begin(WIFI_SSID, WIFI_PASS);
+
   // attempt to connect to Wifi network:
   while (WiFi.status() != WL_CONNECTED)
   {

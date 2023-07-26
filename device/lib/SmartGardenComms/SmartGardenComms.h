@@ -10,6 +10,8 @@
 #include <WiFi.h>
 #include <HTTPClient.h>
 
+#include "config.h"
+
 #pragma region LoRa
 /**
  * @brief Initializes transmitter for LoRa communication.
@@ -54,7 +56,7 @@ void OnRxDone( uint8_t *payload, uint16_t size, int16_t rssi, int8_t snr );
 
 #pragma region HTTP
 
-void post_data(float volume);
+void post_data(float v1, float v2);
 
 #pragma endregion 
 

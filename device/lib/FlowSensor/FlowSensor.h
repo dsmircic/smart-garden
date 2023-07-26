@@ -15,9 +15,9 @@
  */
 struct flow_measurement
 {
-    float clear_flow;
-    float waste_flow;
-    double tx_number;
+    float new_membrane_flow;
+    float old_membrane_flow;
+    int tx_number;
 };
 
 /**
