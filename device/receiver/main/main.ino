@@ -6,12 +6,14 @@
 float total_litres;
 void setup() 
 {
-  total_litres = 0;
+  total_litres = 0.0;
 
   Serial.begin(115200);
   lora_init_receiver();
   init_display();
   connect_to_wifi();
+
+  display_message("Ready!");
 
 }
 
@@ -36,5 +38,5 @@ void loop() {
     post_data(current_litres);
  }
 
-  fm.clear_flow = fm.waste_flow = 0;
+  fm.clear_flow = fm.waste_flow = current_litres = 0;
 }
