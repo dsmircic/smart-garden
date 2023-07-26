@@ -34,4 +34,6 @@
 #define DEVICE_ID       "B6DA1CD53E73C618"
 #define HTTP_TOPIC      "default"
 
+#define MAX_READINGS    100
+
 #endif // CONFIG_H
