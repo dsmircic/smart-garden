@@ -1,8 +1,6 @@
 #ifndef LIB_LORA
 #define LIB_LORA
 
-// #include <LoRa.h>
-// #include <SPI.h>
 #include "LoRaWan_APP.h"
 #include <ArduinoJson.h>
 #include <FlowSensor.h>
@@ -56,12 +54,21 @@ void OnRxDone( uint8_t *payload, uint16_t size, int16_t rssi, int8_t snr );
 
 #pragma region HTTP
 
-void post_data(float v1, float v2);
+/**
+ * @brief Posts data to the HTTP server.
+ * 
+ * @param v Volume parameter to be posted.
+ */
+void post_data(float v1);
 
 #pragma endregion 
 
 #pragma region WiFi
 
+/**
+ * @brief Connects to the network specified in config.h.
+ * 
+ */
 void connect_to_wifi();
 #pragma endregion
 

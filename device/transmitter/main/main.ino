@@ -27,14 +27,12 @@ void loop()
 
     lora_send_reading(fm);
 
-    display_message("Clear flow: " + String(fm.clear_flow) + " L/min", 0, 0);
-    display_message("Waste flow: " + String(fm.waste_flow) + " L/min", 0, 20);
+    display_message("Flow: " + String(fm.clear_flow) + " L/min", 0, 0);
     display_message("Tx No: " + String(fm.tx_number), 0, 40);
 
     clear_display();
   }
 
-  fm.clear_flow = fm.waste_flow = 0;
+  fm.flow = 0;
 
 }
-gi

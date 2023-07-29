@@ -46,8 +46,7 @@ void lora_send_reading(flow_measurement fm)
 
   StaticJsonDocument<BUFFER_SIZE> jsonDoc;
 
-  jsonDoc["cf"] = fm.new_membrane_flow;
-  jsonDoc["wf"] = fm.old_membrane_flow;
+  jsonDoc["cf"] = fm.flow;
   jsonDoc["tx"] = fm.tx_number;
 
   serializeJson(jsonDoc, txpacket);
@@ -76,18 +75,15 @@ void lora_receive_reading(flow_measurement &fm)
 
     if (!error)
     {
-      fm.new_membrane_flow = jsonDoc["cf"].as<float>();
-      fm.old_membrane_flow = jsonDoc["wf"].as<float>();
+      fm.flow = jsonDoc["cf"].as<float>();
       fm.tx_number = jsonDoc["tx"].as<double>();
     }
     else
     {
-      fm.new_membrane_flow = -1;
-      fm.old_membrane_flow = -1;
+      fm.flow = -1;
       fm.tx_number = -1;
     }
 
-    // receivedMessage = String(rxpacket);
     rxSize = 0;
   }
 }
@@ -113,10 +109,10 @@ void OnTxTimeout(void)
 #pragma region HTTP
 
 HTTPClient http;
-void post_data(float new_volume, float old_volume)
+void post_data(float volume)
 {
   // Convert float data to string
-  String data = "{\"new_volume\":" + String(new_volume, 2) + ",\"old_volume\":" + String(old_volume, 2) + "}";
+  String data = "{\"volume\":" + String(volume, 2) + "}";
 
   // Create the HTTP client
 
