@@ -53,8 +53,8 @@ void measure_flow(flow_measurement &fm)
         pulse_count_waste = 0;
         waste = ((1000.0 / (millis() - previous_millis)) * pulse_1_sec_waste) / CALIBRATION_FACTOR;
 
-        fm.clear_flow = round(clear * 100) / 100.0;
-        fm.waste_flow = round(waste * 100) / 100.0;
+        fm.new_membrane_flow = round(clear * 100) / 100.0;
+        fm.old_membrane_flow = round(waste * 100) / 100.0;
 
         previous_millis = millis();
 
