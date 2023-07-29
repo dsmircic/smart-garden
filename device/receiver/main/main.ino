@@ -52,13 +52,10 @@ void house_work(flow_measurement fm)
   }
   else if (package_diff > 1)
   {
-    nm_avg = (stored_reading_nm[reading_index - 1] + current_liters_nm) / 2;
-    om_avg = (stored_reading_om[reading_index - 1] + current_liters_om) / 2;
-
     for (int i = 0; i < package_diff; i++)
     {
-      stored_reading_nm[reading_index + i] = nm_avg;
-      stored_reading_om[reading_index + i] = om_avg;
+      stored_reading_nm[reading_index + i] = current_liters_nm;
+      stored_reading_om[reading_index + i] = current_liters_om;
     }
 
     reading_index += package_diff;
