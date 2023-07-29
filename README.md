@@ -1,5 +1,5 @@
 # smart-garden
-IoT solution for monitoring clear water production out of a reverse osmosis desalinizer.
+IoT solution for monitoring water production from new vs. old membranes out of a reverse osmosis desalinizer.
 
 The solution uses two microcontrollers. One is set up as a sensor and transmitter which measures water flow at both the clear and waste ends of the desalinizer and transmits data to the receiver via the LoRa protocol. The receiving microcontroller serves as a _sink_ with access to a WiFi network and posts data to ThingsBoard Cloud service.
 

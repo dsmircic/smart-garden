@@ -27,3 +27,7 @@ Go to _Sketchbook location_ -> Libraries and copy the contents of the git repo d
 ```
 
 #### 5. Upload the code to Heltec Board and run the code
+
+#### 6. Links
+https://github.com/HelTecAutomation/CubeCell-Arduino/releases/download/V1.5.0/package_CubeCell_index.json
+https://github.com/HelTecAutomation/CubeCell-Arduino/releases/tag/V1.5.0/package_CubeCell_index.json
