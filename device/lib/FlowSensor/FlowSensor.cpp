@@ -13,7 +13,6 @@ void IRAM_ATTR pulse_counter()
 void init_flow_sensor()
 {
     pinMode(SENSOR, INPUT_PULLUP);
-    pinMode(W_SENSOR, INPUT_PULLUP);
 
     pulse_count = 0;
     pulse_1_sec = 0;
@@ -25,7 +24,7 @@ void init_flow_sensor()
 }
 
 float clear;
-void measure_flow(flow_measurement &fm)
+void measure_flow(flow_measurement &fm, bool production)
 {
     current_millis = millis();
     if (current_millis - previous_millis > INTERVAL)
@@ -41,6 +40,11 @@ void measure_flow(flow_measurement &fm)
         clear = ((1000.0 / (millis() - previous_millis)) * pulse_1_sec) / CALIBRATION_FACTOR;
 
         fm.flow = round(clear * 100) / 100.0;
+
+        if (production)
+          fm.type = 0;
+        else
+          fm.type = 1;
 
         previous_millis = millis();
 

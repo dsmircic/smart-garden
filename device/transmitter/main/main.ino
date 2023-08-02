@@ -3,7 +3,7 @@
 #include <HeltecDisplay.h>
 #include <FlowSensor.h>
 
-double packet_no;
+uint8_t packet_no;
 
 void setup()
 {
@@ -12,23 +12,26 @@ void setup()
   init_display();
   init_flow_sensor();
 
-  packet_no = 0.0;
+  packet_no = 0;
 }
 
 flow_measurement fm;
 void loop() 
 {
-  measure_flow(fm);
+  measure_flow(fm, true);
 
-  if (fm.clear_flow > 0 || fm.waste_flow > 0)
+  if (fm.flow > 0)
   {
     fm.tx_number = packet_no;
-    packet_no += 0.01;
+    packet_no++;
 
     lora_send_reading(fm);
 
-    display_message("Flow: " + String(fm.clear_flow) + " L/min", 0, 0);
+    display_message("Flow: " + String(fm.flow) + " L/min", 0, 0);
     display_message("Tx No: " + String(fm.tx_number), 0, 40);
+
+    if (packet_no == 100)
+      packet_no = 0;
 
     clear_display();
   }

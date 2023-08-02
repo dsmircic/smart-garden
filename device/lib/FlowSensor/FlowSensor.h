@@ -15,7 +15,8 @@
 struct flow_measurement
 {
     float flow;
-    int tx_number;
+    uint8_t type;
+    uint8_t tx_number;
 };
 
 /**
@@ -27,8 +28,8 @@ void init_flow_sensor();
 /**
  * @brief Measures clear and waste water flow in liters/min.
  * 
- * @param fm water flow measurements.
+ * @param fm water flow measurements, production is true is production is being measured, false otherwise.
  */
-void measure_flow(flow_measurement &fm);
+void measure_flow(flow_measurement &fm, bool production);
 
 #endif

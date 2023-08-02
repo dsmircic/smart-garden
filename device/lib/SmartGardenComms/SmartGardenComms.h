@@ -34,8 +34,9 @@ void lora_send_reading(flow_measurement fm);
  * @brief Receives LoRa packet.
  * 
  * @param fm flow_measurement struct to store the received data
+ * @return 1 if message is consumption, 0 otherwise
  */
-void lora_receive_reading(flow_measurement &fm);
+int lora_receive_reading(flow_measurement &fm);
 
 
 void OnTxDone( void );

@@ -47,6 +47,7 @@ void lora_send_reading(flow_measurement fm)
   StaticJsonDocument<BUFFER_SIZE> jsonDoc;
 
   jsonDoc["cf"] = fm.flow;
+  jsonDoc["ty"] = fm.type;
   jsonDoc["tx"] = fm.tx_number;
 
   serializeJson(jsonDoc, txpacket);
@@ -61,7 +62,7 @@ void lora_send_reading(flow_measurement fm)
   Serial.println("Message sent!");
 }
 
-void lora_receive_reading(flow_measurement &fm)
+int lora_receive_reading(flow_measurement &fm)
 {
   String receivedMessage = "";
   StaticJsonDocument<BUFFER_SIZE> jsonDoc;
@@ -76,15 +77,23 @@ void lora_receive_reading(flow_measurement &fm)
     if (!error)
     {
       fm.flow = jsonDoc["cf"].as<float>();
-      fm.tx_number = jsonDoc["tx"].as<double>();
+      fm.tx_number = jsonDoc["tx"].as<uint8_t>();
+      fm.type = jsonDoc["ty"].as<uint8_t>();
     }
     else
     {
       fm.flow = -1;
       fm.tx_number = -1;
+      fm.type = -1;
     }
-
+    
     rxSize = 0;
+
+    if (fm.type == 1)
+      return 1;
+  
+    return 0;
+
   }
 }
 
