@@ -34,8 +34,9 @@ void lora_send_reading(flow_measurement fm);
  * @brief Receives LoRa packet.
  * 
  * @param fm flow_measurement struct to store the received data
+ * @return 1 if message is consumption, 0 otherwise
  */
-void lora_receive_reading(flow_measurement &fm);
+int lora_receive_reading(flow_measurement &fm);
 
 
 void OnTxDone( void );
@@ -57,10 +58,8 @@ void OnRxDone( uint8_t *payload, uint16_t size, int16_t rssi, int8_t snr );
 /**
  * @brief Posts data to the HTTP server.
  * 
- * @param v1 Volume parameter to be posted.
- * @param v2 Volume parameter t be posted.
+ * @param v Volume parameter to be posted.
  */
-void post_data(float v1, float v2);
 
 #pragma endregion 
 

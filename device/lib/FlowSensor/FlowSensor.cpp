@@ -2,39 +2,29 @@
 
 long current_millis, previous_millis;
 
-volatile byte pulse_count_clear, pulse_count_waste;
-byte pulse_1_sec_clear, pulse_1_sec_waste;
+volatile byte pulse_count;
+byte pulse_1_sec;
 
-void IRAM_ATTR pulse_counter_clear()
+void IRAM_ATTR pulse_counter()
 {
-  pulse_count_clear++;
-}
-
-void IRAM_ATTR pulse_counter_waste()
-{
-  pulse_count_waste++;
+  pulse_count++;
 }
 
 void init_flow_sensor()
 {
-    pinMode(C_SENSOR, INPUT_PULLUP);
-    pinMode(W_SENSOR, INPUT_PULLUP);
+    pinMode(SENSOR, INPUT_PULLUP);
 
-    pulse_count_clear = 0;
-    pulse_count_waste = 0;
-
-    pulse_1_sec_clear = 0;
-    pulse_1_sec_waste = 0;
+    pulse_count = 0;
+    pulse_1_sec = 0;
 
     current_millis = 0;
     previous_millis = 0;
 
-    attachInterrupt(digitalPinToInterrupt(W_SENSOR), pulse_counter_waste, FALLING);
-    attachInterrupt(digitalPinToInterrupt(C_SENSOR), pulse_counter_clear, FALLING);
+    attachInterrupt(digitalPinToInterrupt(SENSOR), pulse_counter, FALLING);
 }
 
-float clear, waste;
-void measure_flow(flow_measurement &fm)
+float clear;
+void measure_flow(flow_measurement &fm, bool production)
 {
     current_millis = millis();
     if (current_millis - previous_millis > INTERVAL)
@@ -45,16 +35,16 @@ void measure_flow(flow_measurement &fm)
         // based on the number of pulses per second per units of measure (litres/minute in
         // this case) coming from the sensor.
 
-        pulse_1_sec_clear = pulse_count_clear;
-        pulse_count_clear = 0;
-        clear = ((1000.0 / (millis() - previous_millis)) * pulse_1_sec_clear) / CALIBRATION_FACTOR;
+        pulse_1_sec = pulse_count;
+        pulse_count = 0;
+        clear = ((1000.0 / (millis() - previous_millis)) * pulse_1_sec) / CALIBRATION_FACTOR;
 
-        pulse_1_sec_waste = pulse_count_waste;
-        pulse_count_waste = 0;
-        waste = ((1000.0 / (millis() - previous_millis)) * pulse_1_sec_waste) / CALIBRATION_FACTOR;
+        fm.flow = round(clear * 100) / 100.0;
 
-        fm.new_membrane_flow = round(clear * 100) / 100.0;
-        fm.old_membrane_flow = round(waste * 100) / 100.0;
+        if (production)
+          fm.type = 0;
+        else
+          fm.type = 1;
 
         previous_millis = millis();
 

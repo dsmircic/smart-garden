@@ -4,20 +4,19 @@
 #include <Arduino.h>
 #include <cmath>
 
-#define C_SENSOR 7
-#define W_SENSOR 19
+#define SENSOR 7
 #define CALIBRATION_FACTOR 7.5
 #define INTERVAL 1000
 
 /**
- * @brief Stores clear and waste water flow in liters/min.
+ * @brief Stores clear water flow in liters/min and packet number as integer.
  * 
  */
 struct flow_measurement
 {
-    float new_membrane_flow;
-    float old_membrane_flow;
-    int tx_number;
+    float flow;
+    uint8_t type;
+    uint8_t tx_number;
 };
 
 /**
@@ -29,8 +28,8 @@ void init_flow_sensor();
 /**
  * @brief Measures clear and waste water flow in liters/min.
  * 
- * @param fm -> water flow measurements.
+ * @param fm water flow measurements, production is true is production is being measured, false otherwise.
  */
-void measure_flow(flow_measurement &fm);
+void measure_flow(flow_measurement &fm, bool production);
 
 #endif
