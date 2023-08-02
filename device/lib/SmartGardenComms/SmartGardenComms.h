@@ -60,7 +60,6 @@ void OnRxDone( uint8_t *payload, uint16_t size, int16_t rssi, int8_t snr );
  * 
  * @param v Volume parameter to be posted.
  */
-void post_data(float v1);
 
 #pragma endregion 
 
