@@ -36,4 +36,6 @@
 
 #define MAX_READINGS    100
 
+#define TWENTY_MIN      20 * 60 * 1000
+
 #endif // CONFIG_H

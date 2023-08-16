@@ -86,7 +86,7 @@ int lora_receive_reading(flow_measurement &fm)
       fm.tx_number = -1;
       fm.type = -1;
     }
-    
+
     rxSize = 0;
 
     if (fm.type == 1)
@@ -118,7 +118,7 @@ void OnTxTimeout(void)
 #pragma region HTTP
 
 HTTPClient http;
-void post_data(float volume)
+int post_data(float volume)
 {
   // Convert float data to string
   String data = "{\"volume\":" + String(volume, 2) + "}";
@@ -148,11 +148,19 @@ void post_data(float volume)
   }
 
   http.end();  // Free resources
+
+  return httpResponseCode;
 }
 
 #pragma endregion
 
 #pragma region WiFi
+
+bool is_wifi_connected()
+{
+  return Wifi.status() == WL_CONNECTED;
+}
+
 void connect_to_wifi()
 {
   WiFi.begin(WIFI_SSID, WIFI_PASS);

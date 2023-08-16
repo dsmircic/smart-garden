@@ -59,7 +59,9 @@ void OnRxDone( uint8_t *payload, uint16_t size, int16_t rssi, int8_t snr );
  * @brief Posts data to the HTTP server.
  * 
  * @param v Volume parameter to be posted.
+ * @return http response code
  */
+int post_data(float v1);
 
 #pragma endregion 
 
@@ -70,6 +72,14 @@ void OnRxDone( uint8_t *payload, uint16_t size, int16_t rssi, int8_t snr );
  * 
  */
 void connect_to_wifi();
+
+/**
+ * @brief checks if the WiFi connection is alive
+ * 
+ * @return true if the connection is alive
+ * @return false if the connection is dead
+ */
+bool is_wifi_connected();
 #pragma endregion
 
 #endif

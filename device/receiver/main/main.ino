@@ -2,11 +2,14 @@
 #include <SmartGardenComms.h>
 #include <HeltecDisplay.h>
 #include <FlowSensor.h>
+#include <Ticker.h>
 
 unsigned long total_litres;
 uint8_t last_tx_no;
 uint8_t reading_index;
 float unpublished_volume;
+
+Ticker timer(reset_microcontroller, TWENTY_MIN, 0, MILLIS);
 
 float stored_reading[MAX_READINGS] = {0};
 void setup()
@@ -24,6 +27,20 @@ void setup()
 
   display_message("Ready!");
 
+  timer.start();
+
+}
+
+void reset_microcontroller()
+{
+  esp_restart();
+  Serial.println("RESTART!!!!!!!!!");
+}
+
+void reset_timer()
+{
+  timer.stop();
+  timer.start();
 }
 
 String rx;
@@ -86,7 +103,10 @@ void loop() {
   // put your main code here, to run repeatedly:
 
   if (!is_wifi_connected())
+  {
     connect_to_wifi();
+    display_message("Reconnecting...");
+  }
 
   lora_receive_reading(fm);
 
@@ -101,6 +121,14 @@ void loop() {
     display_message("Total litres: " + String(total_litres), 0, 24);
 
     clear_display();
+
+    reset_counter = 0;
+
+    reset_timer();
+ }
+ else
+ {
+   timer.update();
  }
 
   fm.flow = current_liters = 0;
