@@ -6,6 +6,7 @@
 unsigned long total_litres;
 uint8_t last_tx_no;
 uint8_t reading_index;
+float unpublished_volume;
 
 float stored_reading[MAX_READINGS] = {0};
 void setup()
@@ -14,6 +15,7 @@ void setup()
   last_tx_no = 0;
 
   reading_index = 0;
+  unpublished_volume = 0.0;
 
   Serial.begin(115200);
   lora_init_receiver();
@@ -62,7 +64,16 @@ void house_work(flow_measurement fm)
       sum += stored_reading[i];
     }
 
-    post_data(sum);
+    int response = post_data(sum + unpublished_volume);
+
+    if (response != HTTP_CODE_OK)
+    {
+      unpublished_volume += sum;
+    }
+    else
+    {
+      unpublished_volume = 0.0;
+    }
 
     total_litres += sum;
     
@@ -73,6 +84,10 @@ void house_work(flow_measurement fm)
 flow_measurement fm;
 void loop() {
   // put your main code here, to run repeatedly:
+
+  if (!is_wifi_connected())
+    connect_to_wifi();
+
   lora_receive_reading(fm);
 
   if (fm.flow > 0)
